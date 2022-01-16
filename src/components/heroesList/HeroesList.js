@@ -12,7 +12,7 @@ import Spinner from '../spinner/Spinner';
 // Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-    const {heroes, heroesLoadingStatus} = useSelector(state => state);
+    const {heroes, heroesLoadingStatus, activeFilter} = useSelector(state => state);
     const dispatch = useDispatch();
     const {request} = useHttp();
     useEffect(() => {
@@ -29,20 +29,31 @@ const HeroesList = () => {
             .then(dispatch(heroesDeleteCard(id)))   
             .catch(() => dispatch(heroesFetchingError()))  
     }
-    
+    const filterPost = (items, filter) => {
+        switch(filter) {
+            case 'fire':
+                return items.filter(item => item.element === 'fire')
+            case 'water':
+                return items.filter(item => item.element ==='water')
+            case 'wind':
+                return items.filter(item => item.element ==='wind')
+            case 'earth':
+                return items.filter(item => item.element ==='earth')
+            default:
+                return items
+        }
+    }
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
     } else if (heroesLoadingStatus === "error") {
         return <h5 className="text-center mt-5">Error</h5>
     }
-    
+
     const renderHeroesList = (arr) => {
         if (arr.length === 0) {
             return <h5 className="text-center mt-5">There aren't heroes</h5>
         }
-
         return arr.map(({id, ...props}) => {
-            
             return <HeroesListItem 
                 key={id} 
                 {...props}
@@ -51,7 +62,7 @@ const HeroesList = () => {
         })
     }
 
-    const elements = renderHeroesList(heroes);
+    const elements = renderHeroesList(filterPost(heroes, activeFilter));
     return (
         <ul>
             {elements}

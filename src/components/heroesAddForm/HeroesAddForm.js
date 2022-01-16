@@ -25,7 +25,7 @@ const HeroesAddForm = () => {
     const {request} = useHttp();
     const dispatch = useDispatch();
     const {filters} = useSelector(state => state);
-
+    
     const onSubmit = (e) => {
         e.preventDefault();
         const newHero = {
@@ -53,11 +53,11 @@ const HeroesAddForm = () => {
 
     const renderElement = (arr) => {
         
-            const elem = arr.map((item,i) => {
-                return (
-                    <option key={i} value={item}> {item}</option>
-                )
-            })
+        const elem = arr.map((item,i) => {
+            return (
+                <option key={i} value={item.name}> {item.name}</option>
+            )
+        })
         return (
             <select 
                 onChange ={(e)=>setHeroElement(e.target.value)}

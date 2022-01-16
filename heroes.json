@@ -11,13 +11,40 @@
       "name": "unknown hero",
       "description": "Lurking in the shadows",
       "element": "wind"
+    },
+    {
+      "id": "98d241ec-0902-43b8-8ec7-fd649dfb8bf8",
+      "name": "Pee",
+      "description": "pe pe",
+      "element": "water"
+    },
+    {
+      "id": "af4f1c90-1ade-4120-912a-a6d36e1a7d72",
+      "name": "poo",
+      "description": "po po",
+      "element": "earth"
     }
   ],
   "filters": [
-    "all",
-    "fire",
-    "water",
-    "wind",
-    "earth"
+    {
+      "name": "all",
+      "className": "btn-outline-dark"
+    },
+    {
+      "name": "fire",
+      "className": "btn-danger"
+    },
+    {
+      "name": "water",
+      "className": "btn-primary"
+    },
+    {
+      "name": "wind",
+      "className": "btn-success"
+    },
+    {
+      "name": "earth",
+      "className": "btn-secondary"
+    }
   ]
 }

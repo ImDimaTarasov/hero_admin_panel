@@ -11,18 +11,6 @@
       "name": "unknown hero",
       "description": "Lurking in the shadows",
       "element": "wind"
-    },
-    {
-      "id": 3,
-      "name": "sea hero",
-      "description": "Like Aquaman, but not from DC",
-      "element": "water"
-    },
-    {
-      "id": 5,
-      "name": "sea hero",
-      "description": "Like Aquaman, but not from DC",
-      "element": "water"
     }
   ],
   "filters": [

@@ -25,7 +25,7 @@ const HeroesList = () => {
     }, []);
     
     const onDelete = (id) => {
-        request("http://localhost:3001/heroes/"+ id,"DELETE")
+        request(`http://localhost:3001/heroes/${id}`,"DELETE")
             .then(dispatch(heroesDeleteCard(id)))   
             .catch(() => dispatch(heroesFetchingError()))  
     }

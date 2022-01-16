@@ -29,11 +29,16 @@ const reducer = (state = initialState, action) => {
                 heroes: newHeroArr
             }
         case 'HERO_ADD':
-            const addHero = state.heroes.push(action.payload);
+            const addHero = state.heroes.concat(action.payload);
             return {
                 ...state,
                 heroes: addHero
             }
+        case 'FILTERS_FETCHED':
+        return {
+            ...state,
+            filters: action.payload,
+        }
         default: return state
     }
 }

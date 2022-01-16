@@ -16,3 +16,16 @@ export const heroesFetchingError = () => {
         type: 'HEROES_FETCHING_ERROR'
     }
 }
+
+export const heroesDeleteCard = (id) => {
+    return {
+        type: 'HERO_DELETE',
+        payload: id
+    }
+}
+export const heroesAddCard = (hero) => {
+    return {
+        type: 'HERO_ADD',
+        payload: hero
+    }
+}

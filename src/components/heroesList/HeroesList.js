@@ -1,48 +1,69 @@
 import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from 'reselect'
+import { useCallback } from 'react';
 
-import { heroesFetching, heroesFetched, heroesFetchingError, heroesDeleteCard } from '../../actions';
+import { fetchHeroes } from '../../actions';
+import { heroesDeleteCard } from "./heroesSlice";
+
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
-// Задача для этого компонента:
-// При клике на "крестик" идет удаление персонажа из общего состояния
-// Усложненная задача:
-// Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-    const {heroes, heroesLoadingStatus, activeFilter} = useSelector(state => state);
+    const filteredHeroesSelector = createSelector(
+        (state) => state.filters.activeFilter,
+        (state) => state.heroes.heroes,
+        (filters, heroes) => {
+            if(filters === 'all'){
+                return heroes;
+            }else {
+                return heroes.filter(item => item.element === filters);
+            }
+        }
+    )
+    const filteredHeroes = useSelector(filteredHeroesSelector);
+    // const filteredHeroes = useSelector(state => {
+    //     if(state.filters.activeFilter === 'all'){
+    //         return state.heroes.heroes;
+    //     }else {
+    //         return state.heroes.heroes.filter(item => item.element === state.filters.activeFilter);
+    //     }
+    // }); 
+
+
+    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
     useEffect(() => {
-        dispatch(heroesFetching());
-        request("http://localhost:3001/heroes")
-            .then(data => dispatch(heroesFetched(data)))
-            .catch(() => dispatch(heroesFetchingError()))
+        dispatch(fetchHeroes(request));
 
         // eslint-disable-next-line
     }, []);
     
-    const onDelete = (id) => {
+    const onDelete = useCallback((id) => {
         request(`http://localhost:3001/heroes/${id}`,"DELETE")
             .then(dispatch(heroesDeleteCard(id)))   
-            .catch(() => dispatch(heroesFetchingError()))  
-    }
-    const filterPost = (items, filter) => {
-        switch(filter) {
-            case 'fire':
-                return items.filter(item => item.element === 'fire')
-            case 'water':
-                return items.filter(item => item.element ==='water')
-            case 'wind':
-                return items.filter(item => item.element ==='wind')
-            case 'earth':
-                return items.filter(item => item.element ==='earth')
-            default:
-                return items
-        }
-    }
+            .catch((err) => console.log(err))  
+        // eslint-disable-next-line
+    },[request]);
+
+    // const filterPost = (items, filter) => {
+    //     switch(filter) {
+    //         case 'fire':
+    //             return items.filter(item => item.element === 'fire')
+    //         case 'water':
+    //             return items.filter(item => item.element ==='water')
+    //         case 'wind':
+    //             return items.filter(item => item.element ==='wind')
+    //         case 'earth':
+    //             return items.filter(item => item.element ==='earth')
+    //         default:
+    //             return items
+    //     }
+    // }
+
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
     } else if (heroesLoadingStatus === "error") {
@@ -62,7 +83,8 @@ const HeroesList = () => {
         })
     }
 
-    const elements = renderHeroesList(filterPost(heroes, activeFilter));
+    // const elements = renderHeroesList(filterPost(heroes, activeFilter));
+    const elements = renderHeroesList(filteredHeroes);
     return (
         <ul>
             {elements}

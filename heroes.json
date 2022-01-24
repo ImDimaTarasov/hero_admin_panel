@@ -7,22 +7,16 @@
       "element": "fire"
     },
     {
-      "id": 2,
-      "name": "unknown hero",
-      "description": "Lurking in the shadows",
-      "element": "wind"
-    },
-    {
-      "id": "98d241ec-0902-43b8-8ec7-fd649dfb8bf8",
-      "name": "Pee",
-      "description": "pe pe",
+      "id": "88b74601-363c-4247-968f-a4f7eee0d1fa",
+      "name": "BeerMan",
+      "description": "Drink beer",
       "element": "water"
     },
     {
-      "id": "af4f1c90-1ade-4120-912a-a6d36e1a7d72",
-      "name": "poo",
-      "description": "po po",
-      "element": "earth"
+      "id": "c6ede310-0737-49c9-9016-c4007378c6e5",
+      "name": "Unknown",
+      "description": "Unknown",
+      "element": "wind"
     }
   ],
   "filters": [

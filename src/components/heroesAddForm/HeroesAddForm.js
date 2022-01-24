@@ -1,20 +1,10 @@
-import { useState, useEffect} from "react";
+import { useState} from "react";
 import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as randomId } from 'uuid';
 
 import {useHttp} from '../../hooks/http.hook';
-import { heroesAddCard, filtersFetched, heroesFetchingError} from "../../actions";
-// Задача для этого компонента:
-// Реализовать создание нового героя с введенными данными. Он должен попадать
-// в общее состояние и отображаться в списке + фильтроваться
-// Уникальный идентификатор персонажа можно сгенерировать через uiid
-// Усложненная задача:
-// Персонаж создается и в файле json при помощи метода POST
-
-// Дополнительно:
-// Элементы <option></option> желательно сформировать на базе
-// данных из фильтров
+import { heroesAddCard} from "../heroesList/heroesSlice";
 
 const HeroesAddForm = () => {
     const [heroName, setHeroName] = useState('');
@@ -24,7 +14,7 @@ const HeroesAddForm = () => {
 
     const {request} = useHttp();
     const dispatch = useDispatch();
-    const {filters} = useSelector(state => state);
+    const {filters} = useSelector(state => state.filters);
     
     const onSubmit = (e) => {
         e.preventDefault();
@@ -36,20 +26,11 @@ const HeroesAddForm = () => {
         };
         request(`http://localhost:3001/heroes/`,"POST", JSON.stringify(newHero))
             .then(dispatch(heroesAddCard(newHero)))
-            .catch(() => dispatch(heroesFetchingError()))
+            .catch((error) => console.log(error))
         setHeroName('');
         setHeroDescription('');
         setHeroElement('');
     }
-
-    useEffect(() => {
-        request(`http://localhost:3001/filters`)
-            .then(data => dispatch(filtersFetched(data)))
-            .catch(() => dispatch(heroesFetchingError()))
-        // eslint-disable-next-line
-    }, []);
-
-
 
     const renderElement = (arr) => {
         

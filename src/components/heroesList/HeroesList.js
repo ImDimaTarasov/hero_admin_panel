@@ -1,43 +1,24 @@
 import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createSelector } from 'reselect'
 import { useCallback } from 'react';
 
-import { fetchHeroes } from '../../actions';
-import { heroesDeleteCard } from "./heroesSlice";
+import { heroesDeleteCard, fetchHeroes, filteredHeroesSelector } from "./heroesSlice";
 
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
 
 const HeroesList = () => {
-    const filteredHeroesSelector = createSelector(
-        (state) => state.filters.activeFilter,
-        (state) => state.heroes.heroes,
-        (filters, heroes) => {
-            if(filters === 'all'){
-                return heroes;
-            }else {
-                return heroes.filter(item => item.element === filters);
-            }
-        }
-    )
+   
     const filteredHeroes = useSelector(filteredHeroesSelector);
-    // const filteredHeroes = useSelector(state => {
-    //     if(state.filters.activeFilter === 'all'){
-    //         return state.heroes.heroes;
-    //     }else {
-    //         return state.heroes.heroes.filter(item => item.element === state.filters.activeFilter);
-    //     }
-    // }); 
-
-
     const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
+
+
     useEffect(() => {
-        dispatch(fetchHeroes(request));
+        dispatch(fetchHeroes());
 
         // eslint-disable-next-line
     }, []);
@@ -45,24 +26,10 @@ const HeroesList = () => {
     const onDelete = useCallback((id) => {
         request(`http://localhost:3001/heroes/${id}`,"DELETE")
             .then(dispatch(heroesDeleteCard(id)))   
-            .catch((err) => console.log(err))  
-        // eslint-disable-next-line
+            .catch(() => console.log("method DELETE is not available here"))  
+        // eslint-disable-next-lin
     },[request]);
-
-    // const filterPost = (items, filter) => {
-    //     switch(filter) {
-    //         case 'fire':
-    //             return items.filter(item => item.element === 'fire')
-    //         case 'water':
-    //             return items.filter(item => item.element ==='water')
-    //         case 'wind':
-    //             return items.filter(item => item.element ==='wind')
-    //         case 'earth':
-    //             return items.filter(item => item.element ==='earth')
-    //         default:
-    //             return items
-    //     }
-    // }
+    
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;

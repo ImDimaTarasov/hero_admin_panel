@@ -3,19 +3,22 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as randomId } from 'uuid';
 
+import store from "../../store";
 import {useHttp} from '../../hooks/http.hook';
-import { heroesAddCard} from "../heroesList/heroesSlice";
+import { heroesAddCard } from "../heroesList/heroesSlice";
+import { selectAll } from '../heroesFilters/filtersSlice';
 
 const HeroesAddForm = () => {
     const [heroName, setHeroName] = useState('');
     const [heroDescription, setHeroDescription] = useState('');
     const [heroElement, setHeroElement] = useState('');
 
-
+    const filtersLoadingStatus = useSelector(state => state.filters);
+    const filters = selectAll(store.getState());
     const {request} = useHttp();
     const dispatch = useDispatch();
-    const {filters} = useSelector(state => state.filters);
-    
+
+
     const onSubmit = (e) => {
         e.preventDefault();
         const newHero = {
@@ -26,35 +29,30 @@ const HeroesAddForm = () => {
         };
         request(`http://localhost:3001/heroes/`,"POST", JSON.stringify(newHero))
             .then(dispatch(heroesAddCard(newHero)))
-            .catch((error) => console.log(error))
+            .catch(() => console.log("method POST is not available here"))
         setHeroName('');
         setHeroDescription('');
         setHeroElement('');
     }
 
-    const renderElement = (arr) => {
-        
-        const elem = arr.map((item,i) => {
-            return (
-                <option key={i} value={item.name}> {item.name}</option>
-            )
-        })
-        return (
-            <select 
-                onChange ={(e)=>setHeroElement(e.target.value)}
-                value ={heroElement}
-                required
-                className="form-select" 
-                id="element" 
-                name="element">
-                <option >My element...</option>
-                {elem}
-            </select>
-        )
-       
-    }
+    const renderFilter = (filters, status) => {
+        if (status === 'loading'){
+            return (<option>Loading</option>)
+        } else if (status === 'error'){
+            return (<option>Error</option>)
+        }
+
+        if( filters && filters.length > 0){
+            return filters.map(({name, id}) => {
+                // eslint-disable-next-line
+                if(name === 'all') return;
+                return (
+                    <option key={id} value={name}> {name}</option>
+                )
+            })
+        }
+    };
     
-    const elements = renderElement(filters.slice(1,filters.length));
     return (
         <form 
             className="border p-4 shadow-lg rounded"
@@ -88,7 +86,16 @@ const HeroesAddForm = () => {
 
             <div className="mb-3">
                 <label htmlFor="element" className="form-label">Select element of hero</label>
-                {elements}
+                <select 
+                onChange ={(e)=>setHeroElement(e.target.value)}
+                value ={heroElement}
+                required
+                className="form-select" 
+                id="element" 
+                name="element">
+                <option >My element...</option>
+                {renderFilter(filters,filtersLoadingStatus )}
+            </select>
             </div>
 
             <button type="submit" className="btn btn-primary">Create</button>
